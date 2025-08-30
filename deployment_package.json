@@ -1,0 +1,55 @@
+{
+  "package.json": {
+    "name": "safespace-sms-api",
+    "version": "1.0.0",
+    "description": "SMS Backend API for SafeSpace Women's Safety App",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js",
+      "test": "node test.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "cors": "^2.8.5",
+      "twilio": "^4.19.0",
+      "dotenv": "^16.3.1",
+      "express-rate-limit": "^7.1.5"
+    },
+    "devDependencies": {
+      "nodemon": "^3.0.2"
+    },
+    "engines": {
+      "node": ">=16.0.0"
+    }
+  },
+
+  "vercel.json": {
+    "version": 2,
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/server.js"
+      }
+    ],
+    "env": {
+      "TWILIO_ACCOUNT_SID": "@twilio_account_sid",
+      "TWILIO_AUTH_TOKEN": "@twilio_auth_token", 
+      "TWILIO_PHONE_NUMBER": "@twilio_phone_number",
+      "API_KEY": "@api_key",
+      "FRONTEND_URL": "@frontend_url"
+    }
+  },
+
+  "netlify.toml": "[build]\n  command = \"npm install\"\n  functions = \"functions\"\n\n[build.environment]\n  NODE_VERSION = \"18\"\n\n[[redirects]]\n  from = \"/api/*\"\n  to = \"/.netlify/functions/server/:splat\"\n  status = 200",
+
+  ".env.example": "# Twilio Configuration (Get from https://console.twilio.com/)\nTWILIO_ACCOUNT_SID=your_twilio_account_sid_here\nTWILIO_AUTH_TOKEN=your_twilio_auth_token_here\nTWILIO_PHONE_NUMBER=+1234567890\n\n# API Security (Optional - generates random key if not set)\nAPI_KEY=your_secure_api_key_here\n\n# CORS Configuration\nFRONTEND_URL=https://your-frontend-domain.com\n\n# Environment\nNODE_ENV=production\nPORT=3000",
+
+  "README.md": "# SafeSpace SMS Backend API\n\nProfessional SMS backend for the SafeSpace women's safety app.\n\n## ⚡ Quick Deploy (5 minutes)\n\n### Option 1: Vercel (Recommended)\n```bash\n# 1. Install Vercel CLI\nnpm i -g vercel\n\n# 2. Clone/create project folder\nmkdir safespace-api && cd safespace-api\n\n# 3. Copy server.js and package.json from artifacts\n\n# 4. Deploy\nvercel\n```\n\n### Option 2: Netlify Functions\n```bash\n# 1. Install Netlify CLI \nnpm i -g netlify-cli\n\n# 2. Deploy\nnetlify deploy --prod\n```\n\n## 🔧 Configuration\n\n### 1. Get Twilio Credentials (Free Trial)\n1. Sign up at https://console.twilio.com/\n2. Get Account SID, Auth Token, and Phone Number\n3. Free trial gives $15 credit (~2000 SMS)\n\n### 2. Set Environment Variables\n\n**Vercel:**\n```bash\nvercel env add TWILIO_ACCOUNT_SID\nvercel env add TWILIO_AUTH_TOKEN  \nvercel env add TWILIO_PHONE_NUMBER\n```\n\n**Netlify:**\n```bash\nnetlify env:set TWILIO_ACCOUNT_SID your_sid_here\nnetlify env:set TWILIO_AUTH_TOKEN your_token_here\nnetlify env:set TWILIO_PHONE_NUMBER +1234567890\n```\n\n## 📱 Frontend Integration\n\nUpdate your SafeSpace app with your deployed API URL:\n\n```javascript\n// In SMS Configuration Modal\nconst apiUrl = 'https://your-api.vercel.app/send-sms';\n```\n\n## 🧪 Testing\n\n```bash\n# Test endpoint\ncurl -X POST https://your-api.vercel.app/test-sms \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"to\":\"+1234567890\",\"message\":\"Test\",\"test\":true}'\n\n# Send real SMS\ncurl -X POST https://your-api.vercel.app/send-sms \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"to\":\"+1234567890\",\"message\":\"Emergency test from SafeSpace\"}'\n```\n\n## 💰 Costs\n- **Twilio SMS**: ~$0.0075 per message\n- **Vercel/Netlify**: Free tier (sufficient for hackathons)\n- **Total**: ~$0.01 per emergency alert\n\n## 🔒 Security Features\n- Rate limiting (10 SMS per 15 minutes per IP)\n- Optional API key authentication\n- Input validation and sanitization\n- Twilio error handling\n- CORS protection\n\n## 📊 API Endpoints\n\n- `GET /` - Service info\n- `GET /status` - Health check\n- `POST /send-sms` - Send emergency SMS\n- `POST /test-sms` - Test configuration\n\n## 🚀 Production Checklist\n- [ ] Set strong API_KEY in environment\n- [ ] Configure FRONTEND_URL for CORS\n- [ ] Set up Twilio webhook for delivery status\n- [ ] Monitor SMS usage and costs\n- [ ] Set up error alerting\n\n---\n*Built for SafeSpace Hackathon Project*"
+}
